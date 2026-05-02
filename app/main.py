@@ -600,4 +600,3 @@ class GreenCodeSentinelApp:
 def main(page: ft.Page):
     """Main entry point for the Flet application."""
     GreenCodeSentinelApp(page)
-ft.app(target=main)
