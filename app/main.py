@@ -41,7 +41,6 @@ class GreenCodeSentinelApp:
         # Initialize FilePicker
         self.file_picker = ft.FilePicker()
         self.file_picker.on_result = self.on_file_picked  # type: ignore
-        self.page.overlay.append(self.file_picker)
         
         # Initialize analyzer
         try:
