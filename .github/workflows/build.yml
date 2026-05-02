@@ -1,0 +1,83 @@
+name: Build GreenCode Sentinel
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.11']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Build with Flet (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        flet build windows app/main.py --product "GreenCode Sentinel" --org "GreenCode" --project "greencode-sentinel"
+      shell: pwsh
+    
+    - name: Build with Flet (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        flet build macos app/main.py --product "GreenCode Sentinel" --org "GreenCode" --project "greencode-sentinel"
+    
+    - name: Build with Flet (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        flet build linux app/main.py --product "GreenCode Sentinel" --org "GreenCode" --project "greencode-sentinel"
+    
+    - name: Upload Windows artifacts
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: greencode-sentinel-windows
+        path: build/windows/
+        retention-days: 30
+    
+    - name: Upload macOS artifacts
+      if: runner.os == 'macOS'
+      uses: actions/upload-artifact@v4
+      with:
+        name: greencode-sentinel-macos
+        path: build/macos/
+        retention-days: 30
+    
+    - name: Upload Linux artifacts
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v4
+      with:
+        name: greencode-sentinel-linux
+        path: build/linux/
+        retention-days: 30
+    
+    - name: Create release summary
+      if: success()
+      run: |
+        echo "### Build Summary :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **OS**: ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Python**: ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+      shell: bash
+
+# Made with Bob

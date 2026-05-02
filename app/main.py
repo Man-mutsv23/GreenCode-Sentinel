@@ -1,8 +1,3 @@
-"""
-GreenCode Sentinel - Main Application
-Flet-based dashboard for code sustainability analysis.
-"""
-
 import sys
 import os
 from pathlib import Path
@@ -38,15 +33,19 @@ class GreenCodeSentinelApp:
         self.page.window.min_width = 800
         self.page.window.min_height = 600
         
-        # Initialize FilePicker
+        # --- THE CORRECT FILE PICKER SETUP ---
+        # 1. Initialize empty FilePicker
         self.file_picker = ft.FilePicker()
+        # 2. Bind the result event securely
         self.file_picker.on_result = self.on_file_picked  # type: ignore
+        # 3. Add to overlay ONLY
+        self.page.overlay.append(self.file_picker)
         
         # Initialize analyzer
         try:
             self.analyzer = CodeAnalyzer()
         except Exception as e:
-            self.show_error(f"Failed to initialize analyzer: {e}")
+            print(f"Failed to initialize analyzer: {e}")
         
         # Build UI
         self.build_ui()
@@ -107,13 +106,13 @@ class GreenCodeSentinelApp:
         )
     
     def create_upload_section(self) -> ft.Container:
-        """Create the file upload section."""
+        """Create the file upload section with native OS file picker."""
         self.selected_file_text = ft.Text(
             "No file selected",
             size=Typography.BODY_SIZE,
             color=Colors.TEXT_SECONDARY,
         )
-        
+
         self.analyze_button = ft.ElevatedButton(
             content=ft.Text("Analyze Code"),
             bgcolor=Colors.PRIMARY,
@@ -125,7 +124,7 @@ class GreenCodeSentinelApp:
                 shape=ft.RoundedRectangleBorder(radius=BorderRadius.MD),
             ),
         )
-        
+
         upload_card = ft.Container(
             content=ft.Column(
                 cast(List[ft.Control], [
@@ -141,6 +140,8 @@ class GreenCodeSentinelApp:
                         color=Colors.TEXT_SECONDARY,
                     ),
                     ft.Container(height=Spacing.MD),
+                    
+                    # --- NATIVE FILE EXPLORER BUTTON ---
                     ft.ElevatedButton(
                         content=ft.Text("Choose File"),
                         bgcolor=Colors.SECONDARY,
@@ -153,6 +154,7 @@ class GreenCodeSentinelApp:
                             shape=ft.RoundedRectangleBorder(radius=BorderRadius.MD),
                         ),
                     ),
+                    
                     ft.Container(height=Spacing.SM),
                     self.selected_file_text,
                     ft.Container(height=Spacing.MD),
@@ -162,9 +164,8 @@ class GreenCodeSentinelApp:
             ),
             **create_card_style(Shadows.MD),
         )
-        
         return upload_card
-    
+
     def create_results_section(self) -> ft.Container:
         """Create the results display section."""
         self.results_container = ft.Column(
@@ -244,7 +245,7 @@ class GreenCodeSentinelApp:
             self.analyze_button.disabled = False
         else:
             self.selected_file_path = None
-            self.selected_file_text.value = "No file selected"
+            self.selected_file_text.value = "No file selected (Cancelled)"
             self.selected_file_text.color = Colors.TEXT_SECONDARY
             self.analyze_button.disabled = True
         
@@ -271,6 +272,13 @@ class GreenCodeSentinelApp:
         try:
             # Perform analysis
             results = self.analyzer.analyze_file(self.selected_file_path)
+            
+            # --- ADD THESE 3 LINES TO CATCH SILENT ERRORS ---
+            if "error" in results:
+                self.show_error(f"AI Engine Error: {results['error']}")
+                return
+            # ------------------------------------------------
+            
             self.current_results = results
             
             # Display results
@@ -462,7 +470,6 @@ class GreenCodeSentinelApp:
                     text_align=ft.TextAlign.CENTER,
                 ),
                 **create_card_style(Shadows.SM),
-                padding=Spacing.XL,
             )
         
         issue_widgets = []
@@ -599,3 +606,6 @@ class GreenCodeSentinelApp:
 def main(page: ft.Page):
     """Main entry point for the Flet application."""
     GreenCodeSentinelApp(page)
+
+if __name__ == "__main__":
+    ft.app(target=main)

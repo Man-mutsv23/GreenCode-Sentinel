@@ -7,6 +7,7 @@ import os
 from typing import Dict, Any, Optional
 from pathlib import Path
 
+
 from .gemini_client import GeminiClient
 from .carbon_scorer import CarbonScorer
 from .prompts import get_prompt_for_language
@@ -91,18 +92,20 @@ class CodeAnalyzer:
                 "file_name": file_name,
                 "language": language,
                 "analysis": analysis,
-                "score": score_results["score"],
-                "grade": score_results["grade"],
-                "category_scores": score_results["category_scores"],
+                "score": score_results.get("score", 0),
+                "grade": score_results.get("grade", "F"),
                 "issues": analysis.get("issues", []),
-                "total_issues": score_results["total_issues"],
+                "total_issues": score_results.get("total_issues", 0),
                 "critical_issues": score_results.get("critical_issues", 0),
                 "high_issues": score_results.get("high_issues", 0),
                 "medium_issues": score_results.get("medium_issues", 0),
                 "low_issues": score_results.get("low_issues", 0),
-                "co2_savings_kg_year": score_results["co2_savings_kg_year"],
-                "co2_savings_tons_year": score_results["co2_savings_tons_year"],
-                "summary": score_results["summary"],
+                "issue_breakdown": score_results.get("issue_breakdown", {}),
+                "average_severity": score_results.get("average_severity", 0.0),
+                "co2_savings_g_day": score_results.get("co2_savings_g_day", 0.0),
+                "co2_savings_kg_year": score_results.get("co2_savings_kg_year", 0.0),
+                "co2_savings_tons_year": score_results.get("co2_savings_tons_year", 0.0),
+                "summary": score_results.get("summary", "Analysis completed."),
                 "raw_response": raw_response
             }
             

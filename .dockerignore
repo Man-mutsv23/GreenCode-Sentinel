@@ -1,0 +1,23 @@
+# Exclude security & config
+.env
+.env.template
+.git
+.gitignore
+
+# Exclude Python environment and caches
+__pycache__/
+venv/
+.venv/
+.pytest_cache/
+
+# Exclude local build artifacts and logs
+data/results/
+*.log
+tests/
+README.md
+LICENSE
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Made with Bob
