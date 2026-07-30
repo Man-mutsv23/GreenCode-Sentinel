@@ -23,7 +23,7 @@ def test_connection():
         client = GeminiClient()
         
         print(f"   Model: {client.model_id}")
-        print(f"   Thinking Level: {client.thinking_level}")
+        #print(f"   Thinking Level: {client.thinking_level}")
         print(f"   Temperature: {client.temperature}")
         
         print("\n2. Testing connection...")

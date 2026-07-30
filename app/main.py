@@ -7,7 +7,7 @@ from typing import cast, List
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import flet as ft
-from ai_engine import CodeAnalyzer
+from ai_engine import CodeAnalyzer  # noqa: E402  (defined in ai_engine/__init__.py)
 from app.ui.styles import Colors, Typography, Spacing, BorderRadius, Shadows
 from app.ui.styles import get_grade_color, get_score_color, create_card_style
 from app.utils.security import check_rate_limit
@@ -231,7 +231,7 @@ class GreenCodeSentinelApp:
                     self.analyze_button.disabled = True
                     self.page.update()
                     return
-            except OSError as e:
+            except OSError:
                 self.selected_file_text.value = f"Error: Cannot read file"
                 self.selected_file_text.color = Colors.ERROR
                 self.analyze_button.disabled = True
@@ -295,7 +295,7 @@ class GreenCodeSentinelApp:
                     [
                         ft.ProgressRing(color=Colors.PRIMARY),
                         ft.Text(
-                            "Analyzing code with Gemini 3 Pro...",
+                            "Analyzing code with Gemini AI...",
                             size=Typography.HEADING_SIZE,
                             color=Colors.TEXT_PRIMARY,
                         ),
