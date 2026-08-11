@@ -273,11 +273,10 @@ class GreenCodeSentinelApp:
             # Perform analysis
             results = self.analyzer.analyze_file(self.selected_file_path)
             
-            # --- ADD THESE 3 LINES TO CATCH SILENT ERRORS ---
+            # Catch silent errors
             if "error" in results:
                 self.show_error(f"AI Engine Error: {results['error']}")
                 return
-            # ------------------------------------------------
             
             self.current_results = results
             
@@ -608,4 +607,9 @@ def main(page: ft.Page):
     GreenCodeSentinelApp(page)
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    ft.app(
+        target=main,
+        view=ft.AppView.WEB_BROWSER,
+        port=int(os.getenv("APP_PORT", 8080)),
+        host="0.0.0.0"
+    )

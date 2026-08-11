@@ -31,4 +31,8 @@ data/results/
 build/
 dist/
 
+Dockerfile
+docker-compose.yml
+.dockerignore
+
 # Made with Bob
