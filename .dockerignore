@@ -1,6 +1,6 @@
 # Exclude security & config
 .env
-.env.template
+!.env.template
 .git
 .gitignore
 
@@ -20,4 +20,4 @@ Dockerfile
 docker-compose.yml
 .dockerignore
 
-# Made with Bob
+
