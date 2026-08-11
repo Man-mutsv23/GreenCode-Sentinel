@@ -92,6 +92,7 @@ cp .env.template .env
 Update the `.env` file:
 ```env
 GOOGLE_API_KEY=your_actual_api_key_here
+OPEN_ROUTER_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (replace with your key)
 GEMINI_MODEL=gemini-3.1-pro-preview
 GEMINI_THINKING_LEVEL=high
 ```
@@ -181,45 +182,45 @@ The tool estimates annual CO₂ savings based on:
 
 ---
 
-## 🐳 Docker Deployment
+## 🚧 🐳 Docker Deployment (Experimental / In Development)
 
-### Build and Run
+> **Note for Reviewers & Users:**  
+> Containerized deployment via Docker is currently **in active development** for a future release to enable seamless cross-platform web hosting. 
+> 
+> Due to ongoing Flet GUI web-rendering adaptations (specifically native OS `FilePicker` dialog mappings inside headless Linux containers), **we recommend running the application natively via Python** for the best experience.
 
-```bash
-# Build the Docker image
-docker build -t greencode-sentinel .
-
-# Run the container
-docker run -p 8080:8080 --env-file .env greencode-sentinel
-```
-
-### Using Docker Compose
+### Local Native Execution (Recommended)
+To run the fully functional desktop application on Windows, macOS, or Linux:
 
 ```bash
-# Start the application
-docker-compose up
+# 1. Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 
-# Stop the application
-docker-compose down
-```
+# 2. Install dependencies
+pip install -r requirements.txt
 
-Access the dashboard at `http://localhost:8080`
-
+# 3. Configure environment and start
+cp .env.template .env
+python app/main.py
 ---
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `GOOGLE_API_KEY` | Your Google Gemini API key | *Required* |
-| `GEMINI_MODEL` | Gemini model to use | `gemini-3.1-pro-preview` |
-| `GEMINI_THINKING_LEVEL` | AI reasoning depth (low/medium/high) | `high` |
-| `GEMINI_TEMPERATURE` | Response randomness (0.0-1.0) | `0.1` |
-| `GEMINI_MAX_TOKENS` | Maximum response length | `4096` |
-| `APP_PORT` | Application port | `8080` |
+| Variable | Description | Default / Required |
+|----------|-------------|-------------------|
+| `GOOGLE_API_KEY` | Primary Gemini API Key | *Required (for direct Google API)* |
+| `OPEN_ROUTER_KEY` | Fallback API Key via OpenRouter | *Optional (Used if Gemini quota/limit fails)* |
+| `GEMINI_MODEL` | Gemini model name | `gemini-1.5-pro` |
+| `OPENROUTER_MODEL` | Fallback model name | `google/gemini-pro-1.5` |
+| `GEMINI_THINKING_LEVEL` | AI reasoning depth (`low`/`medium`/`high`) | `high` |
+| `GEMINI_TEMPERATURE` | Response randomness (`0.0`-`1.0`) | `0.1` |
+| `GEMINI_MAX_TOKENS` | Maximum output token limit | `4096` |
+| `APP_PORT` | Local application port | `8080` |
 | `DEBUG_MODE` | Enable debug logging | `false` |
+
 
 ### Thinking Levels
 
