@@ -44,11 +44,9 @@ EXPOSE 8080
 ENV PYTHONUNBUFFERED=1
 ENV APP_PORT=8080
 
-# Health check
+# Health check (Using built-in urllib to avoid external dependencies)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8080')" || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080')" || exit 1
 
 # Run the application
 CMD ["python", "app/main.py"]
-
-# Made with Bob

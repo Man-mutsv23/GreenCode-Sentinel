@@ -11,12 +11,18 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # API Keys
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPEN_ROUTER_KEY=${OPEN_ROUTER_KEY}
+      
+      # Gemini Model Configuration
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-pro-preview}
       - GEMINI_THINKING_LEVEL=${GEMINI_THINKING_LEVEL:-high}
       - GEMINI_TEMPERATURE=${GEMINI_TEMPERATURE:-0.1}
       - GEMINI_MAX_TOKENS=${GEMINI_MAX_TOKENS:-4096}
-      - APP_PORT=8080
+      
+      # Application Settings
+      - APP_PORT=${APP_PORT:-8080}
       - DEBUG_MODE=${DEBUG_MODE:-false}
     volumes:
       # Mount .env file for local development
@@ -30,5 +36,3 @@ services:
 networks:
   greencode-network:
     driver: bridge
-
-# Made with Bob
